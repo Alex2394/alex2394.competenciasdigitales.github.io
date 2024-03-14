@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let fila = '';
     let carousel_items = '';
     let indicator_active = '';
-    let carousel_controls = '';
-    let carousel_controls_active = '';
+    let carousel_controls_container = '';
+    let carousel_controls_buttons = '';
     let next = '';
     let prev = '';
 
@@ -48,8 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             section_active = e.target.getAttribute('data-device');
 
-            console.log(section_active);
-            
             if(section_active === 'L'){
                 
                 phone.classList.add('ocultar')
@@ -126,28 +124,50 @@ document.addEventListener('DOMContentLoaded', () => {
             for(let i = 0; i < number_pages; i++){
                 
                 const indicator = document.createElement('button');
+                indicator.setAttribute('data-number', i);
                 
                 if( i === 0 ){
                     indicator.classList.add('active');
                 }
 
                 if(section_active === 'L'){
-                    carousel_controls = document.querySelector('.laptop .carousel-controls');
-                    carousel_controls_active = document.querySelector('.laptop .carousel-controls .active');
+                    carousel_controls_container = document.querySelector('.laptop .carousel-controls');
                 }
                 else{
-                    carousel_controls = document.querySelector('.phone .carousel-controls');
-                    carousel_controls_active = document.querySelector('.phone .carousel-controls .active');
+                    carousel_controls_container = document.querySelector('.phone .carousel-controls');
                 }
                 
-                carousel_controls.appendChild(indicator);
-                
-                indicator.addEventListener('click', (e) => {
-                    fila.scrollLeft = i * fila.offsetWidth;
-                    carousel_controls_active.classList.remove('active');
-                    e.target.classList.add('active');
-                });
+                carousel_controls_container.appendChild(indicator);
             }
+
+            let seq = 1;
+
+            if(section_active === 'L'){
+                carousel_controls_buttons = document.querySelectorAll('.laptop .carousel-controls button');
+            }
+            else{
+                carousel_controls_buttons = document.querySelectorAll('.phone .carousel-controls button');
+            }
+
+            carousel_controls_buttons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const alreadyHasClass = button.classList.contains('active');
+                    carousel_controls_buttons.forEach((button_item_active) => {
+                        button_item_active.classList.remove('active');
+                    });
+                    if(!alreadyHasClass){
+                        console.log(seq);
+                        fila.scrollLeft = seq * fila.offsetWidth;
+                        button.classList.add('active');
+                        seq++;
+                    }
+                });
+            });
+
+            /* console.log(carousel_controls_buttons);
+            for(let button of carousel_controls_buttons){
+                console.log(button);
+            } */
 
             carousel_items.forEach((carousel_item) => {
                 carousel_item.addEventListener('mouseenter', (e) => {
